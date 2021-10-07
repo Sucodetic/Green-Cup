@@ -1,9 +1,22 @@
+import PublicLayout from "./layouts/PublicLayaout";
+import Index from "./pages/Index";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import "./styles/styles.css";
 
 function App() {
   return (
-    <div className="App bg-yellow-700">
-      <h1 className="text-red-800">Hola</h1>
+    <div className="App">
+      <Router>
+        <Switch>
+          <Route path={["/"]}>
+            <PublicLayout>
+              <Route path="/">
+                <Index />
+              </Route>
+            </PublicLayout>
+          </Route>
+        </Switch>
+      </Router>
     </div>
   );
 }
