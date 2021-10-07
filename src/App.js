@@ -9,7 +9,7 @@ function App() {
         <Switch>
           <Route path={["/admin", "/admin/productos", "admin/ventas"]}></Route>
           <PublicLayout>
-            <Route path="/"></Route>
+            <Route path="/admin"></Route>
           </PublicLayout>
           <Route path={["/"]}>
             <PublicLayout>
