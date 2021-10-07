@@ -1,6 +1,6 @@
 import React from "react";
-import Navbar from "components/Navbar";
-import Footer from "components/Footer";
+import Navbar from "../components/Footer";
+import Footer from "../components/Navbar";
 
 const PublicLayout = ({ children }) => {
   return (
