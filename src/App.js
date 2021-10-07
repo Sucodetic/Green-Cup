@@ -1,4 +1,5 @@
 import PublicLayout from "./layouts/PublicLayaout";
+import Index from "./pages/Index";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import "./styles/styles.css";
 
@@ -13,7 +14,9 @@ function App() {
           </PublicLayout>
           <Route path={["/"]}>
             <PublicLayout>
-              <Route path="/"></Route>
+              <Route path="/">
+                <Index />
+              </Route>
             </PublicLayout>
           </Route>
         </Switch>
