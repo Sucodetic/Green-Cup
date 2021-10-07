@@ -4,6 +4,7 @@ import Index from "./pages/Index";
 import Admin from "./pages/Index";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import "./styles/styles.css";
+import "font-awesome/css/font-awesome.min.css";
 
 function App() {
   return (
