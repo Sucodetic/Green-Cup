@@ -8,10 +8,6 @@ function App() {
     <div className="App">
       <Router>
         <Switch>
-          <Route path={["/admin", "/admin/productos", "admin/ventas"]}></Route>
-          <PublicLayout>
-            <Route path="/admin"></Route>
-          </PublicLayout>
           <Route path={["/"]}>
             <PublicLayout>
               <Route path="/">
