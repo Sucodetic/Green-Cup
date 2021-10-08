@@ -1,12 +1,12 @@
 import React from "react";
-import ImagenLogo from "../media/Logo.png";
+import ImagenLogo from "../media/logo.gif";
 import { Link } from "react-router-dom";
 
 const Sidebar = () => {
   return (
-    <nav className="hidden lg:flex lg:w-72 h-full flex-col bg-gray-400 p-4 sidebar">
+    <nav className="hidden lg:flex lg:w-72 h-full flex-col bg-green-50 p-4 sidebar">
       <Link to="/admin">
-        <img src={ImagenLogo} alt="Logo" />
+        <img className="w-full" src={ImagenLogo} alt="Logo" />
       </Link>
       <div className="my-4">
         <Ruta icono="fa fa-cubes" ruta="/admin/productos" nombre="Productos" />
