@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const Navbar = ({ toggle }) => {
   return (
-    <nav className="flex justify-between items-center h-16 bg-white text-black relative shadow-sm font-mono" role="navigation">
+    <nav className="flex justify-between items-center h-16 bg-white text-black btn-google relative shadow-sm font-mono" role="navigation">
       <Link to="/" className="pl-8">
         Green Cup
       </Link>
@@ -15,7 +15,7 @@ const Navbar = ({ toggle }) => {
       </div>
       <div className="pr-8 md:block hidden">
         <Link className="pt-4" to="/">
-          <button className="flex bg-gray-300 p-3 rounded-md m-2 hover:bg-indigo-900 hover:text-white">
+          <button className="flex bg-gray-300 p-3 btn-google rounded-md m-2 hover:bg-indigo-900 hover:text-white">
             <img className="mr-3" src={Icon} alt="Google Icon" />
             Continuar con Google
           </button>
