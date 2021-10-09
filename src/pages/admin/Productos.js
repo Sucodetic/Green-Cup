@@ -127,7 +127,7 @@ const FilaProducto = ({ producto, setEjecutarConsulta }) => {
       method: "PATCH",
       url: `http://localhost:5000/productos/${producto._id}`,
       headers: { "Content-Type": "application/json" },
-      data: { ...infoNuevoProducto, id: producto._id },
+      data: { ...infoNuevoProducto },
     };
 
     await axios
