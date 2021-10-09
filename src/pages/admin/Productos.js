@@ -125,7 +125,7 @@ const FilaProducto = ({ producto, setEjecutarConsulta }) => {
     //enviar la info al backend
     const options = {
       method: "PATCH",
-      url: "https://vast-waters-45728.herokuapp.com/vehicle/update/",
+      url: `http://localhost:5000/productos/${producto._id}`,
       headers: { "Content-Type": "application/json" },
       data: { ...infoNuevoProducto, id: producto._id },
     };
