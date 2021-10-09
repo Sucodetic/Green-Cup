@@ -96,7 +96,7 @@ const TablaProductos = ({ listaProductos, setEjecutarConsulta }) => {
       <div className="flex flex-col w-full m-2 md:hidden">
         {productosFiltrados.map((el) => {
           return (
-            <div className="bg-gray-400 m-2 shadow-xl flex flex-col p-2 rounded-xl">
+            <div key={nanoid()} className="bg-gray-400 m-2 shadow-xl flex flex-col p-2 rounded-xl">
               <span>{el.idProducto}</span>
               <span>{el.descripcion}</span>
               <span>{el.valorUnitario}</span>
