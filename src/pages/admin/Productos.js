@@ -172,43 +172,44 @@ const FilaProducto = ({ producto, setEjecutarConsulta }) => {
         <>
           <td>
             <input
-              className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2"
+              className="bg-gray-300 border border-gray-600 p-2 rounded-lg m-2"
               type="text"
-              value={infoNuevoProducto.name}
-              onChange={(e) => setInfoNuevoProducto({ ...infoNuevoProducto, name: e.target.value })}
+              value={infoNuevoProducto.idProducto}
+              disabled
+              onChange={(e) => setInfoNuevoProducto({ ...infoNuevoProducto, idProducto: e.target.value })}
             />
           </td>
           <td>
             <input
               className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2"
               type="text"
-              value={infoNuevoProducto.brand}
-              onChange={(e) => setInfoNuevoProducto({ ...infoNuevoProducto, brand: e.target.value })}
+              value={infoNuevoProducto.descripcion}
+              onChange={(e) => setInfoNuevoProducto({ ...infoNuevoProducto, descripcion: e.target.value })}
             />
           </td>
           <td>
             <input
               className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2"
               type="text"
-              value={infoNuevoProducto.model}
-              onChange={(e) => setInfoNuevoProducto({ ...infoNuevoProducto, model: e.target.value })}
+              value={infoNuevoProducto.valorUnitario}
+              onChange={(e) => setInfoNuevoProducto({ ...infoNuevoProducto, valorUnitario: e.target.value })}
             />
           </td>
           <td>
             <input
               className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2"
               type="text"
-              value={infoNuevoProducto.model}
-              onChange={(e) => setInfoNuevoProducto({ ...infoNuevoProducto, model: e.target.value })}
+              value={infoNuevoProducto.estado}
+              onChange={(e) => setInfoNuevoProducto({ ...infoNuevoProducto, estado: e.target.value })}
             />
           </td>
         </>
       ) : (
         <>
-          <td>{producto.name}</td>
-          <td>{producto.brand}</td>
-          <td>{producto.model}</td>
-          <td>{producto.model}</td>
+          <td>{producto.idProducto}</td>
+          <td>{producto.descripcion}</td>
+          <td>{producto.valorUnitario}</td>
+          <td>{producto.estado}</td>
         </>
       )}
 
