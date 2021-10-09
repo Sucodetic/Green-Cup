@@ -13,14 +13,12 @@ const Productos = () => {
   const [ejecutarConsulta, setEjecutarConsulta] = useState(true);
 
   useEffect(() => {
-    console.log("consulta", ejecutarConsulta);
     if (ejecutarConsulta) {
       obtenerProductos(setProductos, setEjecutarConsulta);
     }
   }, [ejecutarConsulta]);
 
   useEffect(() => {
-    //obtener lista de vehículos desde el backend
     if (mostrarTabla) {
       setEjecutarConsulta(true);
     }
@@ -122,7 +120,6 @@ const FilaProducto = ({ producto, setEjecutarConsulta }) => {
   });
 
   const actualizarProducto = async () => {
-    //enviar la info al backend
     const options = {
       method: "PATCH",
       url: `http://localhost:5000/productos/${producto._id}`,
