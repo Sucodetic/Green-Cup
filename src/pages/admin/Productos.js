@@ -180,6 +180,7 @@ const FilaProducto = ({ producto, setEjecutarConsulta }) => {
             <input
               className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2"
               type="text"
+              required
               value={infoNuevoProducto.descripcion}
               onChange={(e) => setInfoNuevoProducto({ ...infoNuevoProducto, descripcion: e.target.value })}
             />
@@ -187,9 +188,10 @@ const FilaProducto = ({ producto, setEjecutarConsulta }) => {
           <td>
             <input
               className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2"
-              type="text"
+              type="number"
               value={infoNuevoProducto.valorUnitario}
               onChange={(e) => setInfoNuevoProducto({ ...infoNuevoProducto, valorUnitario: e.target.value })}
+              required
             />
           </td>
           <td>
