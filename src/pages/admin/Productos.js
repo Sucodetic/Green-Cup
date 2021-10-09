@@ -99,9 +99,10 @@ const TablaProductos = ({ listaProductos, setEjecutarConsulta }) => {
         {productosFiltrados.map((el) => {
           return (
             <div className="bg-gray-400 m-2 shadow-xl flex flex-col p-2 rounded-xl">
-              <span>{el.name}</span>
-              <span>{el.brand}</span>
-              <span>{el.model}</span>
+              <span>{el.idProducto}</span>
+              <span>{el.descripcion}</span>
+              <span>{el.valorUnitario}</span>
+              <span>{el.estado}</span>
             </div>
           );
         })}
