@@ -96,7 +96,7 @@ const TablaProductos = ({ listaProductos, setEjecutarConsulta }) => {
       <div className="flex flex-col w-full m-2 md:hidden">
         {productosFiltrados.map((el) => {
           return (
-            <div className="bg-gray-400 m-2 shadow-xl flex flex-col p-2 rounded-xl">
+            <div key={nanoid()} className="bg-gray-400 m-2 shadow-xl flex flex-col p-2 rounded-xl">
               <span>{el.idProducto}</span>
               <span>{el.descripcion}</span>
               <span>{el.valorUnitario}</span>
@@ -281,7 +281,6 @@ const FormularioCreacionProductos = ({ setMostrarTabla, listaProductos, setProdu
     await axios
       .request(options)
       .then(function (response) {
-        console.log(response.data);
         toast.success("Vehículo agregado con éxito");
       })
       .catch(function (error) {
@@ -298,7 +297,7 @@ const FormularioCreacionProductos = ({ setMostrarTabla, listaProductos, setProdu
       <form ref={form} onSubmit={submitForm} className="flex flex-col w-96">
         <label className="flex flex-col" htmlFor="id">
           Identificador del producto
-          <input name="idProducto" className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2" type="text" placeholder="Id producto" required />
+          <input name="idProducto" className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2" type="number" placeholder="Id producto" required />
         </label>
         <label className="flex flex-col" htmlFor="descripción">
           Descripción del producto
