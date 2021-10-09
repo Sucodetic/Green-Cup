@@ -134,12 +134,12 @@ const FilaProducto = ({ producto, setEjecutarConsulta }) => {
       .request(options)
       .then(function (response) {
         console.log(response.data);
-        toast.success("Vehículo modificado con éxito");
+        toast.success("Producto modificado con éxito");
         setEdit(false);
         setEjecutarConsulta(true);
       })
       .catch(function (error) {
-        toast.error("Error modificando el vehículo");
+        toast.error("Error modificando el producto");
         console.error(error);
       });
   };
