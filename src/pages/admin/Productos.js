@@ -298,7 +298,7 @@ const FormularioCreacionProductos = ({ setMostrarTabla, listaProductos, setProdu
       <form ref={form} onSubmit={submitForm} className="flex flex-col w-96">
         <label className="flex flex-col" htmlFor="id">
           Identificador del producto
-          <input name="idProducto" className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2" type="text" placeholder="Id producto" required />
+          <input name="idProducto" className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2" type="number" placeholder="Id producto" required />
         </label>
         <label className="flex flex-col" htmlFor="descripción">
           Descripción del producto
