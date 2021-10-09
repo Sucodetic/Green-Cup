@@ -156,12 +156,12 @@ const FilaProducto = ({ producto, setEjecutarConsulta }) => {
       .request(options)
       .then(function (response) {
         console.log(response.data);
-        toast.success("vehículo eliminado con éxito");
+        toast.success("Producto eliminado con éxito");
         setEjecutarConsulta(true);
       })
       .catch(function (error) {
         console.error(error);
-        toast.error("Error eliminando el vehículo");
+        toast.error("Error eliminando el producto");
       });
     setOpenDialog(false);
   };
