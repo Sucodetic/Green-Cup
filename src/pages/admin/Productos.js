@@ -193,12 +193,14 @@ const FilaProducto = ({ producto, setEjecutarConsulta }) => {
             />
           </td>
           <td>
-            <input
+            <select
               className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2"
-              type="text"
               value={infoNuevoProducto.estado}
               onChange={(e) => setInfoNuevoProducto({ ...infoNuevoProducto, estado: e.target.value })}
-            />
+            >
+              <option>Disponible</option>
+              <option>No disponible</option>
+            </select>
           </td>
         </>
       ) : (
