@@ -13,14 +13,12 @@ const Productos = () => {
   const [ejecutarConsulta, setEjecutarConsulta] = useState(true);
 
   useEffect(() => {
-    console.log("consulta", ejecutarConsulta);
     if (ejecutarConsulta) {
       obtenerProductos(setProductos, setEjecutarConsulta);
     }
   }, [ejecutarConsulta]);
 
   useEffect(() => {
-    //obtener lista de vehículos desde el backend
     if (mostrarTabla) {
       setEjecutarConsulta(true);
     }
@@ -73,7 +71,7 @@ const TablaProductos = ({ listaProductos, setEjecutarConsulta }) => {
       <input
         value={busqueda}
         onChange={(e) => setBusqueda(e.target.value)}
-        placeholder="Buscar"
+        placeholder="Buscar productos"
         className="border-2 border-gray-700 px-3 py-1 self-start rounded-md focus:outline-none focus:border-indigo-500"
       />
       <h2 className="text-2xl font-extrabold text-gray-800">Todos los productos</h2>
@@ -99,9 +97,10 @@ const TablaProductos = ({ listaProductos, setEjecutarConsulta }) => {
         {productosFiltrados.map((el) => {
           return (
             <div className="bg-gray-400 m-2 shadow-xl flex flex-col p-2 rounded-xl">
-              <span>{el.name}</span>
-              <span>{el.brand}</span>
-              <span>{el.model}</span>
+              <span>{el.idProducto}</span>
+              <span>{el.descripcion}</span>
+              <span>{el.valorUnitario}</span>
+              <span>{el.estado}</span>
             </div>
           );
         })}
@@ -114,30 +113,30 @@ const FilaProducto = ({ producto, setEjecutarConsulta }) => {
   const [edit, setEdit] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [infoNuevoProducto, setInfoNuevoProducto] = useState({
-    name: producto.name,
-    brand: producto.brand,
-    model: producto.model,
+    idProducto: producto.idProducto,
+    descripcion: producto.descripcion,
+    valorUnitario: producto.valorUnitario,
+    estado: producto.estado,
   });
 
   const actualizarProducto = async () => {
-    //enviar la info al backend
     const options = {
       method: "PATCH",
-      url: "https://vast-waters-45728.herokuapp.com/vehicle/update/",
+      url: `http://localhost:5000/productos/${producto._id}`,
       headers: { "Content-Type": "application/json" },
-      data: { ...infoNuevoProducto, id: producto._id },
+      data: { ...infoNuevoProducto },
     };
 
     await axios
       .request(options)
       .then(function (response) {
         console.log(response.data);
-        toast.success("Vehículo modificado con éxito");
+        toast.success("Producto modificado con éxito");
         setEdit(false);
         setEjecutarConsulta(true);
       })
       .catch(function (error) {
-        toast.error("Error modificando el vehículo");
+        toast.error("Error modificando el producto");
         console.error(error);
       });
   };
@@ -145,7 +144,7 @@ const FilaProducto = ({ producto, setEjecutarConsulta }) => {
   const eliminarProducto = async () => {
     const options = {
       method: "DELETE",
-      url: "https://vast-waters-45728.herokuapp.com/vehicle/delete/",
+      url: `http://localhost:5000/productos/${producto._id}`,
       headers: { "Content-Type": "application/json" },
       data: { id: producto._id },
     };
@@ -154,12 +153,12 @@ const FilaProducto = ({ producto, setEjecutarConsulta }) => {
       .request(options)
       .then(function (response) {
         console.log(response.data);
-        toast.success("vehículo eliminado con éxito");
+        toast.success("Producto eliminado con éxito");
         setEjecutarConsulta(true);
       })
       .catch(function (error) {
         console.error(error);
-        toast.error("Error eliminando el vehículo");
+        toast.error("Error eliminando el producto");
       });
     setOpenDialog(false);
   };
@@ -170,43 +169,48 @@ const FilaProducto = ({ producto, setEjecutarConsulta }) => {
         <>
           <td>
             <input
-              className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2"
+              className="bg-gray-300 border border-gray-600 p-2 rounded-lg m-2"
               type="text"
-              value={infoNuevoProducto.name}
-              onChange={(e) => setInfoNuevoProducto({ ...infoNuevoProducto, name: e.target.value })}
+              value={infoNuevoProducto.idProducto}
+              disabled
+              onChange={(e) => setInfoNuevoProducto({ ...infoNuevoProducto, idProducto: e.target.value })}
             />
           </td>
           <td>
             <input
               className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2"
               type="text"
-              value={infoNuevoProducto.brand}
-              onChange={(e) => setInfoNuevoProducto({ ...infoNuevoProducto, brand: e.target.value })}
+              required
+              value={infoNuevoProducto.descripcion}
+              onChange={(e) => setInfoNuevoProducto({ ...infoNuevoProducto, descripcion: e.target.value })}
             />
           </td>
           <td>
             <input
               className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2"
-              type="text"
-              value={infoNuevoProducto.model}
-              onChange={(e) => setInfoNuevoProducto({ ...infoNuevoProducto, model: e.target.value })}
+              type="number"
+              value={infoNuevoProducto.valorUnitario}
+              onChange={(e) => setInfoNuevoProducto({ ...infoNuevoProducto, valorUnitario: e.target.value })}
+              required
             />
           </td>
           <td>
-            <input
+            <select
               className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2"
-              type="text"
-              value={infoNuevoProducto.model}
-              onChange={(e) => setInfoNuevoProducto({ ...infoNuevoProducto, model: e.target.value })}
-            />
+              value={infoNuevoProducto.estado}
+              onChange={(e) => setInfoNuevoProducto({ ...infoNuevoProducto, estado: e.target.value })}
+            >
+              <option>Disponible</option>
+              <option>No disponible</option>
+            </select>
           </td>
         </>
       ) : (
         <>
-          <td>{producto.name}</td>
-          <td>{producto.brand}</td>
-          <td>{producto.model}</td>
-          <td>{producto.model}</td>
+          <td>{producto.idProducto}</td>
+          <td>{producto.descripcion}</td>
+          <td>{producto.valorUnitario}</td>
+          <td>{producto.estado}</td>
         </>
       )}
 
@@ -264,9 +268,14 @@ const FormularioCreacionProductos = ({ setMostrarTabla, listaProductos, setProdu
 
     const options = {
       method: "POST",
-      url: "https://vast-waters-45728.herokuapp.com/vehicle/create",
+      url: "http://localhost:5000/productos",
       headers: { "Content-Type": "application/json" },
-      data: { name: nuevoProducto.name, brand: nuevoProducto.brand, model: nuevoProducto.model },
+      data: {
+        idProducto: nuevoProducto.idProducto,
+        descripcion: nuevoProducto.descripcion,
+        valorUnitario: nuevoProducto.valorUnitario,
+        estado: nuevoProducto.estado,
+      },
     };
 
     await axios
@@ -289,15 +298,15 @@ const FormularioCreacionProductos = ({ setMostrarTabla, listaProductos, setProdu
       <form ref={form} onSubmit={submitForm} className="flex flex-col w-96">
         <label className="flex flex-col" htmlFor="id">
           Identificador del producto
-          <input name="id" className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2" type="text" placeholder="Id producto" required />
+          <input name="idProducto" className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2" type="text" placeholder="Id producto" required />
         </label>
         <label className="flex flex-col" htmlFor="descripción">
           Descripción del producto
-          <input name="descripción" className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2" type="text" placeholder="Descripción" required />
+          <input name="descripcion" className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2" type="text" placeholder="Descripción" required />
         </label>
         <label className="flex flex-col" htmlFor="valor">
           Valor unitario del producto
-          <input name="valor" className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2" type="number" placeholder="Valor unitario" required />
+          <input name="valorUnitario" className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2" type="number" placeholder="Valor unitario" required />
         </label>
         <label className="flex flex-col" htmlFor="estado">
           Estado del producto

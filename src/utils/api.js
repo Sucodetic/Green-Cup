@@ -1,11 +1,11 @@
 import axios from "axios";
 
-export const obtenerProductos = async (setVehiculos, setEjecutarConsulta) => {
-  const options = { method: "GET", url: "https://vast-waters-45728.herokuapp.com/vehicle/" };
+export const obtenerProductos = async (setProductos, setEjecutarConsulta) => {
+  const options = { method: "GET", url: "http://localhost:5000/productos" };
   await axios
     .request(options)
     .then(function (response) {
-      setVehiculos(response.data);
+      setProductos(response.data);
     })
     .catch(function (error) {
       console.error(error);
