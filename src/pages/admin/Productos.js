@@ -73,7 +73,7 @@ const TablaProductos = ({ listaProductos, setEjecutarConsulta }) => {
       <input
         value={busqueda}
         onChange={(e) => setBusqueda(e.target.value)}
-        placeholder="Buscar"
+        placeholder="Buscar productos"
         className="border-2 border-gray-700 px-3 py-1 self-start rounded-md focus:outline-none focus:border-indigo-500"
       />
       <h2 className="text-2xl font-extrabold text-gray-800">Todos los productos</h2>
