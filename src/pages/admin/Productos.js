@@ -115,9 +115,10 @@ const FilaProducto = ({ producto, setEjecutarConsulta }) => {
   const [edit, setEdit] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [infoNuevoProducto, setInfoNuevoProducto] = useState({
-    name: producto.name,
-    brand: producto.brand,
-    model: producto.model,
+    idProducto: producto.idProducto,
+    descripcion: producto.descripcion,
+    valorUnitario: producto.valorUnitario,
+    estado: producto.estado,
   });
 
   const actualizarProducto = async () => {
