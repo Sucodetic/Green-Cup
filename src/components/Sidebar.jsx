@@ -1,6 +1,7 @@
 import React from "react";
 import ImagenLogo from "../media/logo.gif";
 import { Link } from "react-router-dom";
+import useActiveRoute from "../hooks/useActiveRoute"
 
 const Sidebar = () => {
   return (
@@ -19,9 +20,10 @@ const Sidebar = () => {
 };
 
 const Ruta = ({ icono, ruta, nombre }) => {
+  const isActive = useActiveRoute(ruta);
   return (
     <Link to={ruta}>
-      <button className="p-1 my-2  bg-green-600 hover:bg-green-900 flex w-full items-center text-white rounded-md">
+      <button className={`p-1 my-2  bg-${isActive ? "blue-600" : "green-900"} hover:bg-indigo-900 flex w-full items-center text-white rounded-md`}>
         <i className={`${icono} w-10`} />
         {nombre}
       </button>
