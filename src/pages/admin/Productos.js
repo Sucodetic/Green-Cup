@@ -281,7 +281,6 @@ const FormularioCreacionProductos = ({ setMostrarTabla, listaProductos, setProdu
     await axios
       .request(options)
       .then(function (response) {
-        console.log(response.data);
         toast.success("Vehículo agregado con éxito");
       })
       .catch(function (error) {
