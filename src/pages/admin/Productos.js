@@ -147,7 +147,7 @@ const FilaProducto = ({ producto, setEjecutarConsulta }) => {
   const eliminarProducto = async () => {
     const options = {
       method: "DELETE",
-      url: "https://vast-waters-45728.herokuapp.com/vehicle/delete/",
+      url: `http://localhost:5000/productos/${producto._id}`,
       headers: { "Content-Type": "application/json" },
       data: { id: producto._id },
     };
