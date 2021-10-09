@@ -267,7 +267,7 @@ const FormularioCreacionProductos = ({ setMostrarTabla, listaProductos, setProdu
 
     const options = {
       method: "POST",
-      url: "https://vast-waters-45728.herokuapp.com/vehicle/create",
+      url: "http://localhost:5000/productos",
       headers: { "Content-Type": "application/json" },
       data: { name: nuevoProducto.name, brand: nuevoProducto.brand, model: nuevoProducto.model },
     };
