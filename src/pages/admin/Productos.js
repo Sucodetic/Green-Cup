@@ -269,7 +269,12 @@ const FormularioCreacionProductos = ({ setMostrarTabla, listaProductos, setProdu
       method: "POST",
       url: "http://localhost:5000/productos",
       headers: { "Content-Type": "application/json" },
-      data: { name: nuevoProducto.name, brand: nuevoProducto.brand, model: nuevoProducto.model },
+      data: {
+        idProducto: nuevoProducto.idProducto,
+        descripcion: nuevoProducto.descripcion,
+        valorUnitario: nuevoProducto.valorUnitario,
+        estado: nuevoProducto.estado,
+      },
     };
 
     await axios
