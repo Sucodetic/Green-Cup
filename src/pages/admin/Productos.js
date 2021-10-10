@@ -33,6 +33,7 @@ const Productos = () => {
       setTextoBoton("Mostrar Todos los productos");
     }
   }, [mostrarTabla]);
+
   return (
     <div className="flex h-full w-full flex-col items-center justify-start p-8">
       <div className="flex flex-col w-full">
