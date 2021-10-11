@@ -3,7 +3,7 @@ import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 import { nanoid } from "nanoid";
 import { Dialog, Tooltip } from "@material-ui/core";
-import { obtenerProductos } from "../../utils/api";
+import { obtenerVentas } from "../../utils/api-ventas";
 import "react-toastify/dist/ReactToastify.css";
 
 const Ventas = () => {
@@ -11,11 +11,12 @@ const Ventas = () => {
   const [ventas, setVentas] = useState([]);
   const [textoBoton, setTextoBoton] = useState("Crear Nueva Venta");
   const [ejecutarConsulta, setEjecutarConsulta] = useState(true);
+  console.log(ventas);
 
   useEffect(() => {
     console.log("consulta", ejecutarConsulta);
     if (ejecutarConsulta) {
-      obtenerProductos(setVentas, setEjecutarConsulta);
+      obtenerVentas(setVentas, setEjecutarConsulta);
     }
   }, [ejecutarConsulta]);
 
@@ -88,6 +89,8 @@ const TablaVentas = ({ listaVentas, setEjecutarConsulta }) => {
               <th>Fecha venta</th>
               <th>Nombre cliente</th>
               <th>Documento cliente</th>
+              <th>vendedor</th>
+              <th>estado</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -102,9 +105,16 @@ const TablaVentas = ({ listaVentas, setEjecutarConsulta }) => {
         {ventasFiltradas.map((el) => {
           return (
             <div className="bg-gray-400 m-2 shadow-xl flex flex-col p-2 rounded-xl">
-              <span>{el.name}</span>
-              <span>{el.brand}</span>
-              <span>{el.model}</span>
+              <span>{el.idVenta}</span>
+              <span>{el.valorVenta}</span>
+              <span>{el.idProducto}</span>
+              <span>{el.cantidad}</span>
+              <span>{el.precioUnitario}</span>
+              <span>{el.fecha}</span>
+              <span>{el.nombreCliente}</span>
+              <span>{el.documentoCliente}</span>
+              <span>{el.vendedor}</span>
+              <span>{el.estado}</span>
             </div>
           );
         })}
@@ -117,16 +127,23 @@ const FilaVenta = ({ venta, setEjecutarConsulta }) => {
   const [edit, setEdit] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [infoNuevaVenta, setInfoNuevaVenta] = useState({
-    name: venta.name,
-    brand: venta.brand,
-    model: venta.model,
+    idVenta: venta.idVenta,
+    valorVenta: venta.valorVenta,
+    idProducto: venta.idProducto,
+    cantidad: venta.cantidad,
+    precioUnitario: venta.precioUnitario,
+    fecha: venta.fecha,
+    nombreCliente: venta.nombreCliente,
+    documentoCliente: venta.documentoCliente,
+    vendedor: venta.vendedor,
+    estado: venta.estado,
   });
 
   const actualizarVenta = async () => {
     //enviar la info al backend
     const options = {
       method: "PATCH",
-      url: "https://vast-waters-45728.herokuapp.com/vehicle/update/",
+      url: `http://localhost:5000/ventas/${venta._id}`,
       headers: { "Content-Type": "application/json" },
       data: { ...infoNuevaVenta, id: venta._id },
     };
@@ -148,7 +165,7 @@ const FilaVenta = ({ venta, setEjecutarConsulta }) => {
   const eliminarVenta = async () => {
     const options = {
       method: "DELETE",
-      url: "https://vast-waters-45728.herokuapp.com/vehicle/delete/",
+      url: `http://localhost:5000/ventas/${venta._id}`,
       headers: { "Content-Type": "application/json" },
       data: { id: venta._id },
     };
@@ -175,45 +192,95 @@ const FilaVenta = ({ venta, setEjecutarConsulta }) => {
             <input
               className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2"
               type="text"
-              value={infoNuevaVenta.name}
-              onChange={(e) => setInfoNuevaVenta({ ...infoNuevaVenta, name: e.target.value })}
+              value={infoNuevaVenta.idVenta}
+              onChange={(e) => setInfoNuevaVenta({ ...infoNuevaVenta, idVenta: e.target.value })}
             />
           </td>
           <td>
             <input
               className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2"
               type="text"
-              value={infoNuevaVenta.brand}
-              onChange={(e) => setInfoNuevaVenta({ ...infoNuevaVenta, brand: e.target.value })}
+              value={infoNuevaVenta.valorVenta}
+              onChange={(e) => setInfoNuevaVenta({ ...infoNuevaVenta, valorVenta: e.target.value })}
             />
           </td>
           <td>
             <input
               className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2"
               type="text"
-              value={infoNuevaVenta.model}
-              onChange={(e) => setInfoNuevaVenta({ ...infoNuevaVenta, model: e.target.value })}
+              value={infoNuevaVenta.idProducto}
+              onChange={(e) => setInfoNuevaVenta({ ...infoNuevaVenta, idProducto: e.target.value })}
             />
           </td>
           <td>
             <input
               className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2"
               type="text"
-              value={infoNuevaVenta.model}
-              onChange={(e) => setInfoNuevaVenta({ ...infoNuevaVenta, model: e.target.value })}
+              value={infoNuevaVenta.cantidad}
+              onChange={(e) => setInfoNuevaVenta({ ...infoNuevaVenta, cantidad: e.target.value })}
+            />
+          </td>
+          <td>
+            <input
+              className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2"
+              type="text"
+              value={infoNuevaVenta.precioUnitario}
+              onChange={(e) => setInfoNuevaVenta({ ...infoNuevaVenta, precioUnitario: e.target.value })}
+            />
+          </td>
+          <td>
+            <input
+              className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2"
+              type="text"
+              value={infoNuevaVenta.fecha}
+              onChange={(e) => setInfoNuevaVenta({ ...infoNuevaVenta, fecha: e.target.value })}
+            />
+          </td>
+          <td>
+            <input
+              className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2"
+              type="text"
+              value={infoNuevaVenta.nombreCliente}
+              onChange={(e) => setInfoNuevaVenta({ ...infoNuevaVenta, nombreCliente: e.target.value })}
+            />
+          </td>
+          <td>
+            <input
+              className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2"
+              type="text"
+              value={infoNuevaVenta.documentoCliente}
+              onChange={(e) => setInfoNuevaVenta({ ...infoNuevaVenta, documentoCliente: e.target.value })}
+            />
+          </td>
+          <td>
+            <input
+              className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2"
+              type="text"
+              value={infoNuevaVenta.vendedor}
+              onChange={(e) => setInfoNuevaVenta({ ...infoNuevaVenta, vendedor: e.target.value })}
+            />
+          </td>
+          <td>
+            <input
+              className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2"
+              type="text"
+              value={infoNuevaVenta.estado}
+              onChange={(e) => setInfoNuevaVenta({ ...infoNuevaVenta, estado: e.target.value })}
             />
           </td>
         </>
       ) : (
         <>
-          <td>{venta.name}</td>
-          <td>{venta.brand}</td>
-          <td>{venta.model}</td>
-          <td>{venta.model}</td>
-          <td>{venta.model}</td>
-          <td>{venta.model}</td>
-          <td>{venta.model}</td>
-          <td>{venta.model}</td>
+          <td>{venta.idVenta}</td>
+          <td>{venta.valorVenta}</td>
+          <td>{venta.idProducto}</td>
+          <td>{venta.cantidad}</td>
+          <td>{venta.precioUnitario}</td>
+          <td>{venta.fecha}</td>
+          <td>{venta.nombreCliente}</td>
+          <td>{venta.documentoCliente}</td>
+          <td>{venta.vendedor}</td>
+          <td>{venta.estado}</td>
         </>
       )}
 
@@ -271,9 +338,20 @@ const FormularioCreacionVentas = ({ setMostrarTabla, listaVentas, setVentas }) =
 
     const options = {
       method: "POST",
-      url: "https://vast-waters-45728.herokuapp.com/vehicle/create",
+      url: `http://localhost:5000/ventas/${venta._id}`,
       headers: { "Content-Type": "application/json" },
-      data: { name: nuevaVenta.name, brand: nuevaVenta.brand, model: nuevaVenta.model },
+      data: { 
+        idVenta: nuevaventa.idVenta,
+        valorVenta: nuevaventa.valorVenta,
+        idProducto: nuevaventa.idProducto,
+        cantidad: nuevaventa.cantidad,
+        precioUnitario: nuevaventa.precioUnitario,
+        fecha: nuevaventa.fecha,
+        nombreCliente: nuevaventa.nombreCliente,
+        documentoCliente: nuevaventa.documentoCliente,
+        vendedor: nuevaventa.vendedor,
+        estado: nuevaventa.estado,
+       },
     };
 
     await axios
