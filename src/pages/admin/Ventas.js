@@ -4,18 +4,23 @@ import axios from "axios";
 import { nanoid } from "nanoid";
 import { Dialog, Tooltip } from "@material-ui/core";
 import { obtenerProductos } from "../../utils/api";
+import { obtenerVendedores } from "../../utils/api-users";
+import { obtenerVentas } from "../../utils/api-ventas.js";
 import "react-toastify/dist/ReactToastify.css";
 
 const Ventas = () => {
   const [mostrarTabla, setMostrarTabla] = useState(true);
   const [ventas, setVentas] = useState([]);
+  const [productos, setProductos] = useState([]);
+  const [vendedores, setVendedores] = useState([]);
   const [textoBoton, setTextoBoton] = useState("Crear Nueva Venta");
   const [ejecutarConsulta, setEjecutarConsulta] = useState(true);
 
   useEffect(() => {
-    console.log("consulta", ejecutarConsulta);
     if (ejecutarConsulta) {
-      obtenerProductos(setVentas, setEjecutarConsulta);
+      obtenerVentas(setVentas, setEjecutarConsulta);
+      obtenerProductos(setProductos, setEjecutarConsulta);
+      obtenerVendedores(setVendedores, setEjecutarConsulta);
     }
   }, [ejecutarConsulta]);
 
@@ -46,16 +51,22 @@ const Ventas = () => {
         </button>
       </div>
       {mostrarTabla ? (
-        <TablaVentas listaVentas={ventas} setEjecutarConsulta={setEjecutarConsulta} />
+        <TablaVentas listaVentas={ventas} listaVendedores={vendedores} listaProductos={productos} setEjecutarConsulta={setEjecutarConsulta} />
       ) : (
-        <FormularioCreacionVentas setMostrarTabla={setMostrarTabla} listaVentas={ventas} setVentas={setVentas} />
+        <FormularioCreacionVentas
+          setMostrarTabla={setMostrarTabla}
+          listaProductos={productos}
+          listaVentas={ventas}
+          listaVendedores={vendedores}
+          setVentas={setVentas}
+        />
       )}
       <ToastContainer position="bottom-center" autoClose={5000} />
     </div>
   );
 };
 
-const TablaVentas = ({ listaVentas, setEjecutarConsulta }) => {
+const TablaVentas = ({ listaVentas, listaVendedores, listaProductos, setEjecutarConsulta }) => {
   const [busqueda, setBusqueda] = useState("");
   const [ventasFiltradas, setVentasFiltradas] = useState(listaVentas);
 
@@ -76,7 +87,7 @@ const TablaVentas = ({ listaVentas, setEjecutarConsulta }) => {
         className="border-2 border-gray-700 px-3 py-1 self-start rounded-md focus:outline-none focus:border-indigo-500"
       />
       <h2 className="text-2xl font-extrabold text-gray-800">Todas las ventas</h2>
-      <div className="hidden md:flex w-full">
+      <div className="hidden md:flex w-full overflow-scroll">
         <table className="tabla">
           <thead>
             <tr>
@@ -85,15 +96,25 @@ const TablaVentas = ({ listaVentas, setEjecutarConsulta }) => {
               <th>Id producto</th>
               <th>Cantidad venta</th>
               <th>Precio unitario</th>
-              <th>Fecha venta</th>
+              <th colSpan={2}>Fecha venta</th>
               <th>Nombre cliente</th>
               <th>Documento cliente</th>
+              <th>Vendedor</th>
+              <th>Estado venta</th>
               <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
             {ventasFiltradas.map((venta) => {
-              return <FilaVenta key={nanoid()} venta={venta} setEjecutarConsulta={setEjecutarConsulta} />;
+              return (
+                <FilaVenta
+                  key={nanoid()}
+                  venta={venta}
+                  listaVendedores={listaVendedores}
+                  listaProductos={listaProductos}
+                  setEjecutarConsulta={setEjecutarConsulta}
+                />
+              );
             })}
           </tbody>
         </table>
@@ -101,10 +122,17 @@ const TablaVentas = ({ listaVentas, setEjecutarConsulta }) => {
       <div className="flex flex-col w-full m-2 md:hidden">
         {ventasFiltradas.map((el) => {
           return (
-            <div className="bg-gray-400 m-2 shadow-xl flex flex-col p-2 rounded-xl">
-              <span>{el.name}</span>
-              <span>{el.brand}</span>
-              <span>{el.model}</span>
+            <div key={nanoid()} className="bg-gray-400 m-2 shadow-xl flex flex-col p-2 rounded-xl">
+              <span>{el.idVenta}</span>
+              <span>{el.valorVenta}</span>
+              <span>{el.idProducto}</span>
+              <span>{el.cantidad}</span>
+              <span>{el.precioUnitario}</span>
+              <span>{el.fecha}</span>
+              <span>{el.nombreCliente}</span>
+              <span>{el.documentoCliente}</span>
+              <span>{el.vendedor}</span>
+              <span>{el.estado}</span>
             </div>
           );
         })}
@@ -113,20 +141,26 @@ const TablaVentas = ({ listaVentas, setEjecutarConsulta }) => {
   );
 };
 
-const FilaVenta = ({ venta, setEjecutarConsulta }) => {
+const FilaVenta = ({ venta, listaVendedores, listaProductos, setEjecutarConsulta }) => {
   const [edit, setEdit] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [infoNuevaVenta, setInfoNuevaVenta] = useState({
-    name: venta.name,
-    brand: venta.brand,
-    model: venta.model,
+    idVenta: venta.idVenta,
+    valorVenta: venta.valorVenta,
+    idProducto: venta.idProducto,
+    cantidad: venta.cantidad,
+    precioUnitario: venta.precioUnitario,
+    fecha: venta.fecha,
+    nombreCliente: venta.nombreCliente,
+    documentoCliente: venta.documentoCliente,
+    vendedor: venta.vendedor,
+    estado: venta.estado,
   });
 
   const actualizarVenta = async () => {
-    //enviar la info al backend
     const options = {
       method: "PATCH",
-      url: "https://vast-waters-45728.herokuapp.com/vehicle/update/",
+      url: `http://localhost:5000/ventas/${venta._id}`,
       headers: { "Content-Type": "application/json" },
       data: { ...infoNuevaVenta, id: venta._id },
     };
@@ -148,7 +182,7 @@ const FilaVenta = ({ venta, setEjecutarConsulta }) => {
   const eliminarVenta = async () => {
     const options = {
       method: "DELETE",
-      url: "https://vast-waters-45728.herokuapp.com/vehicle/delete/",
+      url: `http://localhost:5000/ventas/${venta._id}`,
       headers: { "Content-Type": "application/json" },
       data: { id: venta._id },
     };
@@ -173,47 +207,107 @@ const FilaVenta = ({ venta, setEjecutarConsulta }) => {
         <>
           <td>
             <input
-              className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2"
+              className="bg-gray-300 border border-gray-600 p-2 rounded-lg m-2"
               type="text"
-              value={infoNuevaVenta.name}
-              onChange={(e) => setInfoNuevaVenta({ ...infoNuevaVenta, name: e.target.value })}
+              value={infoNuevaVenta.idVenta}
+              onChange={(e) => setInfoNuevaVenta({ ...infoNuevaVenta, idVenta: e.target.value })}
+              readOnly
             />
           </td>
           <td>
             <input
               className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2"
               type="text"
-              value={infoNuevaVenta.brand}
-              onChange={(e) => setInfoNuevaVenta({ ...infoNuevaVenta, brand: e.target.value })}
+              value={infoNuevaVenta.valorVenta}
+              onChange={(e) => setInfoNuevaVenta({ ...infoNuevaVenta, valorVenta: e.target.value })}
+            />
+          </td>
+          <td>
+            <select
+              className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2"
+              value={infoNuevaVenta.idProducto}
+              onChange={(e) => setInfoNuevaVenta({ ...infoNuevaVenta, idProducto: e.target.value })}
+            >
+              {listaProductos.map((producto) => {
+                return <option key={nanoid()}>{producto.idProducto}</option>;
+              })}
+            </select>
+          </td>
+          <td>
+            <input
+              className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2"
+              type="text"
+              value={infoNuevaVenta.cantidad}
+              onChange={(e) => setInfoNuevaVenta({ ...infoNuevaVenta, cantidad: e.target.value })}
             />
           </td>
           <td>
             <input
               className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2"
               type="text"
-              value={infoNuevaVenta.model}
-              onChange={(e) => setInfoNuevaVenta({ ...infoNuevaVenta, model: e.target.value })}
+              value={infoNuevaVenta.precioUnitario}
+              onChange={(e) => setInfoNuevaVenta({ ...infoNuevaVenta, precioUnitario: e.target.value })}
+            />
+          </td>
+          <td>
+            <input
+              className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2"
+              type="date"
+              value={infoNuevaVenta.fecha}
+              onChange={(e) => setInfoNuevaVenta({ ...infoNuevaVenta, fecha: e.target.value })}
             />
           </td>
           <td>
             <input
               className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2"
               type="text"
-              value={infoNuevaVenta.model}
-              onChange={(e) => setInfoNuevaVenta({ ...infoNuevaVenta, model: e.target.value })}
+              value={infoNuevaVenta.nombreCliente}
+              onChange={(e) => setInfoNuevaVenta({ ...infoNuevaVenta, nombreCliente: e.target.value })}
             />
+          </td>
+          <td>
+            <input
+              className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2"
+              type="text"
+              value={infoNuevaVenta.documentoCliente}
+              onChange={(e) => setInfoNuevaVenta({ ...infoNuevaVenta, documentoCliente: e.target.value })}
+            />
+          </td>
+          <td>
+            <select
+              className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2"
+              value={infoNuevaVenta.vendedor}
+              onChange={(e) => setInfoNuevaVenta({ ...infoNuevaVenta, vendedor: e.target.value })}
+            >
+              {listaVendedores.map((vendedor) => {
+                return <option key={nanoid()}>{vendedor.nombre}</option>;
+              })}
+            </select>
+          </td>
+          <td>
+            <select
+              className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2"
+              value={infoNuevaVenta.vendedor}
+              onChange={(e) => setInfoNuevaVenta({ ...infoNuevaVenta, estado: e.target.value })}
+            >
+              <option>En proceso</option>
+              <option>Cancelada</option>
+              <option>Entregada</option>
+            </select>
           </td>
         </>
       ) : (
         <>
-          <td>{venta.name}</td>
-          <td>{venta.brand}</td>
-          <td>{venta.model}</td>
-          <td>{venta.model}</td>
-          <td>{venta.model}</td>
-          <td>{venta.model}</td>
-          <td>{venta.model}</td>
-          <td>{venta.model}</td>
+          <td>{venta.idVenta}</td>
+          <td>{venta.valorVenta}</td>
+          <td>{venta.idProducto}</td>
+          <td>{venta.cantidad}</td>
+          <td>{venta.precioUnitario}</td>
+          <td colSpan={2}>{venta.fecha}</td>
+          <td>{venta.nombreCliente}</td>
+          <td>{venta.documentoCliente}</td>
+          <td>{venta.vendedor}</td>
+          <td>{venta.estado}</td>
         </>
       )}
 
@@ -257,8 +351,11 @@ const FilaVenta = ({ venta, setEjecutarConsulta }) => {
   );
 };
 
-const FormularioCreacionVentas = ({ setMostrarTabla, listaVentas, setVentas }) => {
+const FormularioCreacionVentas = ({ setMostrarTabla, listaProductos, listaVendedores }) => {
   const form = useRef(null);
+  const [valorProducto, setValorProducto] = useState("");
+  const [idProducto, setIdProducto] = useState("Seleccione una opción");
+  const [valorTotalVenta, setValorTotalVenta] = useState("0");
 
   const submitForm = async (e) => {
     e.preventDefault();
@@ -271,9 +368,20 @@ const FormularioCreacionVentas = ({ setMostrarTabla, listaVentas, setVentas }) =
 
     const options = {
       method: "POST",
-      url: "https://vast-waters-45728.herokuapp.com/vehicle/create",
+      url: "http://localhost:5000/ventas",
       headers: { "Content-Type": "application/json" },
-      data: { name: nuevaVenta.name, brand: nuevaVenta.brand, model: nuevaVenta.model },
+      data: {
+        idVenta: nuevaVenta.idVenta,
+        valorVenta: nuevaVenta.valorVenta,
+        idProducto: nuevaVenta.productoId,
+        cantidad: nuevaVenta.cantidad,
+        precioUnitario: nuevaVenta.precioUnitario,
+        fecha: nuevaVenta.fecha,
+        nombreCliente: nuevaVenta.nombreCliente,
+        documentoCliente: nuevaVenta.documentoCliente,
+        vendedor: nuevaVenta.vendedor,
+        estado: nuevaVenta.estado,
+      },
     };
 
     await axios
@@ -295,31 +403,73 @@ const FormularioCreacionVentas = ({ setMostrarTabla, listaVentas, setVentas }) =
       <h2 className="text-2xl font-extrabold mb-4">Crear nueva venta</h2>
       <form ref={form} onSubmit={submitForm} className="flex flex-col">
         <div className="flex flex-col md:flex-row">
-          <label className="flex flex-col" htmlFor="id">
+          <label className="flex flex-col" htmlFor="idVenta">
             Identificador de la venta
-            <input name="id" className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2" type="number" placeholder="Id venta" required />
+            <input name="idVenta" className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2" type="number" placeholder="Id venta" required />
           </label>
-          <label className="flex flex-col" htmlFor="valor">
+          <label className="flex flex-col" htmlFor="valorVenta">
             Valor total de la venta
-            <input name="valor" className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2" type="number" placeholder="Valor total venta" required />
+            <input
+              name="valorVenta"
+              className="bg-gray-300 border border-gray-600 p-2 rounded-lg m-2"
+              type="number"
+              placeholder="Valor total venta"
+              value={valorTotalVenta}
+              readOnly
+            />
           </label>
         </div>
-        <div className="flex flex-col md:flex-row">
-          <label className="flex flex-col" htmlFor="idProducto">
+        <div className="flex flex-col md:flex-row md:gap-4">
+          <label className="flex flex-col" htmlFor="productoId">
             Identificador producto
-            <input name="idProducto" className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2" type="number" placeholder="Id producto" required />
+            <select
+              className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2  w-full"
+              name="productoId"
+              onChange={(e) => {
+                listaProductos.forEach((el) => {
+                  if (el.idProducto === e.target.value) {
+                    setValorProducto(el.valorUnitario);
+                    setIdProducto(e.target.value);
+                  }
+                });
+              }}
+              value={idProducto}
+            >
+              <option disabled value={0}>
+                Selecciones una opción
+              </option>
+              {listaProductos.map((producto) => {
+                return <option key={nanoid()}>{producto.idProducto}</option>;
+              })}
+            </select>
           </label>
-          <label className="flex flex-col" htmlFor="idProducto">
+          <label className="flex flex-col" htmlFor="cantidad">
             Cantidad de la venta
-            <input name="cantidad" className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2" type="number" placeholder="Cantidad de venta" required />
+            <input
+              name="cantidad"
+              className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2"
+              type="number"
+              placeholder="Cantidad de venta"
+              onChange={(e) => {
+                setValorTotalVenta(e.target.value * valorProducto);
+              }}
+              required
+            />
           </label>
         </div>
         <div className="flex flex-col md:flex-row">
-          <label className="flex flex-col" htmlFor="precio">
+          <label className="flex flex-col" htmlFor="precioUnitario">
             Precio unitario
-            <input name="precio" className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2" type="number" placeholder="Precio" required />
+            <input
+              className="bg-gray-300 border border-gray-600 p-2 rounded-lg m-2"
+              type="number"
+              placeholder="Precio"
+              value={valorProducto}
+              name="precioUnitario"
+              readOnly
+            />
           </label>
-          <label className="flex flex-col" htmlFor="valor">
+          <label className="flex flex-col" htmlFor="fecha">
             Fecha de venta
             <input name="fecha" className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2" type="date" placeholder="Fecha" required />
           </label>
@@ -338,6 +488,30 @@ const FormularioCreacionVentas = ({ setMostrarTabla, listaVentas, setVentas }) =
               placeholder="Documento cliente"
               required
             />
+          </label>
+        </div>
+        <div className="flex flex-col md:flex-row md:gap-6">
+          <label className="flex flex-col" htmlFor="vendedor">
+            Vendedor
+            <select className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2 w-full" name="vendedor" defaultValue={0}>
+              <option disabled value={0}>
+                Seleccione una opción
+              </option>
+              {listaVendedores.map((vendedor) => {
+                return <option key={nanoid()}>{vendedor.nombre}</option>;
+              })}
+            </select>
+          </label>
+          <label className="flex flex-col" htmlFor="estado">
+            Estado
+            <select className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2 mr-16 w-full" name="estado" defaultValue={0}>
+              <option disabled value={0}>
+                Seleccione una opción
+              </option>
+              <option>En proceso</option>
+              <option>Cancelada</option>
+              <option>Entregada</option>
+            </select>
           </label>
         </div>
         <button type="submit" className="col-span-2 bg-green-400 p-2 rounded-full shadow-md hover:bg-green-600 text-white">
