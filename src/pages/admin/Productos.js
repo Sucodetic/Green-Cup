@@ -122,9 +122,9 @@ const FilaProducto = ({ producto, setEjecutarConsulta }) => {
     await editarProducto(
       producto._id,
       {
-        descripcion: producto.descripcion,
-        valorUnitario: producto.valorUnitario,
-        estado: producto.estado,
+        descripcion: infoNuevoProducto.descripcion,
+        valorUnitario: infoNuevoProducto.valorUnitario,
+        estado: infoNuevoProducto.estado,
       },
       (response) => {
         toast.success("Producto modificado con exito");
