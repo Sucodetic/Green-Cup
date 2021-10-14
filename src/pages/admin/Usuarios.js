@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
-import axios from "axios";
 import { nanoid } from "nanoid";
 import { Dialog, Tooltip } from "@material-ui/core";
-import { obtenerUsuarios } from "../../utils/api-users";
+import { obtenerUsuarios, editarUsuario, eliminarUsuario } from "../../utils/usuarios/api";
 import "react-toastify/dist/ReactToastify.css";
 
 const Usuarios = () => {
@@ -101,47 +100,36 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
   });
 
   const actualizarUsuario = async () => {
-    console.log(infoNuevoUsuario);
-    const options = {
-      method: "PATCH",
-      url: `http://localhost:5000/usuarios/${usuario._id}`,
-      headers: { "Content-Type": "application/json" },
-      data: { ...infoNuevoUsuario },
-    };
-
-    await axios
-      .request(options)
-      .then(function (response) {
-        console.log(response.data);
-        toast.success("Usuario modificado con éxito");
+    editarUsuario(
+      usuario._id,
+      {
+        estado: infoNuevoUsuario.estado,
+        rol: infoNuevoUsuario.rol,
+      },
+      (response) => {
+        console.log(response);
+        toast.success("Usuario modificado con exito");
         setEdit(false);
         setEjecutarConsulta(true);
-      })
-      .catch(function (error) {
-        toast.error("Error modificando el usuario");
-        console.error(error);
-      });
+      },
+      (error) => {
+        console.log(error);
+        toast.error("Error al modificar el usuario");
+      }
+    );
   };
 
-  const eliminarUsuario = async () => {
-    const options = {
-      method: "DELETE",
-      url: `http://localhost:5000/usuarios/${usuario._id}`,
-      headers: { "Content-Type": "application/json" },
-      data: { id: usuario._id },
-    };
-
-    await axios
-      .request(options)
-      .then(function (response) {
-        console.log(response.data);
-        toast.success("Usuario eliminado con éxito");
+  const eliminarUsuarios = async () => {
+    eliminarUsuario(
+      usuario._id,
+      (response) => {
+        toast.success("Usuario eliminado con exito");
         setEjecutarConsulta(true);
-      })
-      .catch(function (error) {
-        console.error(error);
-        toast.error("Error eliminando el usuario");
-      });
+      },
+      (error) => {
+        toast.error("Eror eliminando al usuario");
+      }
+    );
     setOpenDialog(false);
   };
 
@@ -225,7 +213,7 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
           <div className="p-8 flex flex-col">
             <h1 className="text-gray-900 text-2xl font-bold">¿Está seguro de querer eliminar el usuario?</h1>
             <div className="flex w-full items-center justify-center my-4">
-              <button onClick={() => eliminarUsuario()} className="mx-2 px-4 py-2 bg-green-500 text-white hover:bg-green-700 rounded-md shadow-md">
+              <button onClick={() => eliminarUsuarios()} className="mx-2 px-4 py-2 bg-green-500 text-white hover:bg-green-700 rounded-md shadow-md">
                 Sí
               </button>
               <button onClick={() => setOpenDialog(false)} className="mx-2 px-4 py-2 bg-red-500 text-white hover:bg-red-700 rounded-md shadow-md">
