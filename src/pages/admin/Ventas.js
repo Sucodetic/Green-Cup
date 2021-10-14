@@ -96,7 +96,7 @@ const TablaVentas = ({ listaVentas, listaVendedores, listaProductos, setEjecutar
               <th>Id producto</th>
               <th>Cantidad venta</th>
               <th>Precio unitario</th>
-              <th colSpan={2}>Fecha venta</th>
+              <th>Fecha venta</th>
               <th>Nombre cliente</th>
               <th>Documento cliente</th>
               <th>Vendedor</th>
@@ -298,7 +298,7 @@ const FilaVenta = ({ venta, listaVendedores, listaProductos, setEjecutarConsulta
           <td>{venta.idProducto}</td>
           <td>{venta.cantidad}</td>
           <td>{venta.precioUnitario}</td>
-          <td colSpan={2}>{venta.fecha}</td>
+          <td>{venta.fecha}</td>
           <td>{venta.nombreCliente}</td>
           <td>{venta.documentoCliente}</td>
           <td>{venta.vendedor}</td>
