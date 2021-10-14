@@ -7,37 +7,40 @@ import UsuariosAdmin from "./pages/admin/Usuarios";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import "./styles/styles.css";
 import "font-awesome/css/font-awesome.min.css";
+import { Auth0Provider } from "@auth0/auth0-react";
 
 function App() {
   return (
-    <div className="App">
-      <Router>
-        <Switch>
-          <Route path={["/admin/productos", "/admin/ventas", "/admin/usuarios"]}>
-            <PrivateLayout>
-              <Switch>
-                <Route path="/admin/productos">
-                  <ProductosAdmin />
+    <Auth0Provider domain="greencup.us.auth0.com" clientId="QvkbbmGoKufsWPIh92vJUz3sU4eq2Py0" redirectUri={window.location.origin}>
+      <div className="App">
+        <Router>
+          <Switch>
+            <Route path={["/admin/productos", "/admin/ventas", "/admin/usuarios"]}>
+              <PrivateLayout>
+                <Switch>
+                  <Route path="/admin/productos">
+                    <ProductosAdmin />
+                  </Route>
+                  <Route path="/admin/ventas">
+                    <VentasAdmin />
+                  </Route>
+                  <Route path="/admin/usuarios">
+                    <UsuariosAdmin />
+                  </Route>
+                </Switch>
+              </PrivateLayout>
+            </Route>
+            <Route path={["/"]}>
+              <PublicLayout>
+                <Route path="/">
+                  <Index />
                 </Route>
-                <Route path="/admin/ventas">
-                  <VentasAdmin />
-                </Route>
-                <Route path="/admin/usuarios">
-                  <UsuariosAdmin />
-                </Route>
-              </Switch>
-            </PrivateLayout>
-          </Route>
-          <Route path={["/"]}>
-            <PublicLayout>
-              <Route path="/">
-                <Index />
-              </Route>
-            </PublicLayout>
-          </Route>
-        </Switch>
-      </Router>
-    </div>
+              </PublicLayout>
+            </Route>
+          </Switch>
+        </Router>
+      </div>
+    </Auth0Provider>
   );
 }
 
