@@ -185,6 +185,7 @@ const FilaVenta = ({ venta, listaVendedores, listaProductos, setEjecutarConsulta
       venta._id,
       (responde) => {
         toast.success("La venta se ha eliminado con exito");
+        setEjecutarConsulta(true);
       },
       (error) => {
         toast.error("Ha ocurrido un error al eliminar la venta");
