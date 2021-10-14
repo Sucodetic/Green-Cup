@@ -173,6 +173,7 @@ const FilaVenta = ({ venta, listaVendedores, listaProductos, setEjecutarConsulta
       },
       (response) => {
         toast.success("Venta modificada exitosamente");
+        setEjecutarConsulta(true);
       },
       (error) => {
         toast.error("Ha ocurrido un error modificando la venta");
