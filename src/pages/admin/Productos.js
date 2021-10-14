@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
 import { ToastContainer, toast } from "react-toastify";
-import axios from "axios";
 import { nanoid } from "nanoid";
 import { Dialog, Tooltip } from "@material-ui/core";
-import { obtenerProductos } from "../../utils/productos/api";
+import { crearProducto, editarProducto, obtenerProductos, eliminarProducto } from "../../utils/productos/api";
 import "react-toastify/dist/ReactToastify.css";
 
 const Productos = () => {
@@ -120,46 +119,35 @@ const FilaProducto = ({ producto, setEjecutarConsulta }) => {
   });
 
   const actualizarProducto = async () => {
-    const options = {
-      method: "PATCH",
-      url: `http://localhost:5000/productos/${producto._id}`,
-      headers: { "Content-Type": "application/json" },
-      data: { ...infoNuevoProducto },
-    };
-
-    await axios
-      .request(options)
-      .then(function (response) {
-        console.log(response.data);
-        toast.success("Producto modificado con éxito");
+    await editarProducto(
+      producto._id,
+      {
+        descripcion: producto.descripcion,
+        valorUnitario: producto.valorUnitario,
+        estado: producto.estado,
+      },
+      (response) => {
+        toast.success("Producto modificado con exito");
         setEdit(false);
         setEjecutarConsulta(true);
-      })
-      .catch(function (error) {
+      },
+      (error) => {
         toast.error("Error modificando el producto");
-        console.error(error);
-      });
+      }
+    );
   };
 
-  const eliminarProducto = async () => {
-    const options = {
-      method: "DELETE",
-      url: `http://localhost:5000/productos/${producto._id}`,
-      headers: { "Content-Type": "application/json" },
-      data: { id: producto._id },
-    };
-
-    await axios
-      .request(options)
-      .then(function (response) {
-        console.log(response.data);
-        toast.success("Producto eliminado con éxito");
+  const eliminarProductos = async () => {
+    await eliminarProducto(
+      producto._id,
+      (response) => {
+        toast.success("Producto eliminado con exito");
         setEjecutarConsulta(true);
-      })
-      .catch(function (error) {
-        console.error(error);
-        toast.error("Error eliminando el producto");
-      });
+      },
+      (error) => {
+        toast.error("Error eliminando producto");
+      }
+    );
     setOpenDialog(false);
   };
 
@@ -240,7 +228,7 @@ const FilaProducto = ({ producto, setEjecutarConsulta }) => {
           <div className="p-8 flex flex-col">
             <h1 className="text-gray-900 text-2xl font-bold">¿Está seguro de querer eliminar el producto?</h1>
             <div className="flex w-full items-center justify-center my-4">
-              <button onClick={() => eliminarProducto()} className="mx-2 px-4 py-2 bg-green-500 text-white hover:bg-green-700 rounded-md shadow-md">
+              <button onClick={() => eliminarProductos()} className="mx-2 px-4 py-2 bg-green-500 text-white hover:bg-green-700 rounded-md shadow-md">
                 Sí
               </button>
               <button onClick={() => setOpenDialog(false)} className="mx-2 px-4 py-2 bg-red-500 text-white hover:bg-red-700 rounded-md shadow-md">
@@ -266,28 +254,20 @@ const FormularioCreacionProductos = ({ setMostrarTabla, listaProductos, setProdu
       nuevoProducto[key] = value;
     });
 
-    const options = {
-      method: "POST",
-      url: "http://localhost:5000/productos",
-      headers: { "Content-Type": "application/json" },
-      data: {
+    await crearProducto(
+      {
         idProducto: nuevoProducto.idProducto,
         descripcion: nuevoProducto.descripcion,
         valorUnitario: nuevoProducto.valorUnitario,
         estado: nuevoProducto.estado,
       },
-    };
-
-    await axios
-      .request(options)
-      .then(function (response) {
-        toast.success("Vehículo agregado con éxito");
-      })
-      .catch(function (error) {
-        console.error(error);
-        toast.error("Error creando un vehículo");
-      });
-
+      (response) => {
+        toast.success("Producto creado con exito");
+      },
+      (error) => {
+        toast.error("Error creando el producto");
+      }
+    );
     setMostrarTabla(true);
   };
 

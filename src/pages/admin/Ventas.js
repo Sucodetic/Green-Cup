@@ -1,11 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import { ToastContainer, toast } from "react-toastify";
-import axios from "axios";
 import { nanoid } from "nanoid";
 import { Dialog, Tooltip } from "@material-ui/core";
 import { obtenerProductos } from "../../utils/productos/api";
 import { obtenerVendedores } from "../../utils/usuarios/api";
-import { obtenerVenta, editarVenta, eliminarVenta } from "../../utils/ventas/api";
+import { obtenerVenta, editarVenta, eliminarVenta, crearVenta } from "../../utils/ventas/api";
 import "react-toastify/dist/ReactToastify.css";
 
 const Ventas = () => {
@@ -96,7 +95,7 @@ const TablaVentas = ({ listaVentas, listaVendedores, listaProductos, setEjecutar
               <th>Id producto</th>
               <th>Cantidad venta</th>
               <th>Precio unitario</th>
-              <th colSpan={2}>Fecha venta</th>
+              <th>Fecha venta</th>
               <th>Nombre cliente</th>
               <th>Documento cliente</th>
               <th>Vendedor</th>
@@ -161,18 +160,19 @@ const FilaVenta = ({ venta, listaVendedores, listaProductos, setEjecutarConsulta
     await editarVenta(
       venta._id,
       {
-        valorVenta: venta.valorVenta,
-        idProducto: venta.idProducto,
-        cantidad: venta.cantidad,
-        precioUnitario: venta.precioUnitario,
-        fecha: venta.fecha,
-        nombreCliente: venta.nombreCliente,
-        documentoCliente: venta.documentoCliente,
-        vendedor: venta.vendedor,
-        estado: venta.estado,
+        valorVenta: infoNuevaVenta.valorVenta,
+        idProducto: infoNuevaVenta.idProducto,
+        cantidad: infoNuevaVenta.cantidad,
+        precioUnitario: infoNuevaVenta.precioUnitario,
+        fecha: infoNuevaVenta.fecha,
+        nombreCliente: infoNuevaVenta.nombreCliente,
+        documentoCliente: infoNuevaVenta.documentoCliente,
+        vendedor: infoNuevaVenta.vendedor,
+        estado: infoNuevaVenta.estado,
       },
       (response) => {
         toast.success("Venta modificada exitosamente");
+        setEjecutarConsulta(true);
       },
       (error) => {
         toast.error("Ha ocurrido un error modificando la venta");
@@ -185,6 +185,7 @@ const FilaVenta = ({ venta, listaVendedores, listaProductos, setEjecutarConsulta
       venta._id,
       (responde) => {
         toast.success("La venta se ha eliminado con exito");
+        setEjecutarConsulta(true);
       },
       (error) => {
         toast.error("Ha ocurrido un error al eliminar la venta");
@@ -280,7 +281,7 @@ const FilaVenta = ({ venta, listaVendedores, listaProductos, setEjecutarConsulta
           <td>
             <select
               className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2"
-              value={infoNuevaVenta.vendedor}
+              value={infoNuevaVenta.estado}
               onChange={(e) => setInfoNuevaVenta({ ...infoNuevaVenta, estado: e.target.value })}
             >
               <option>En proceso</option>
@@ -296,7 +297,7 @@ const FilaVenta = ({ venta, listaVendedores, listaProductos, setEjecutarConsulta
           <td>{venta.idProducto}</td>
           <td>{venta.cantidad}</td>
           <td>{venta.precioUnitario}</td>
-          <td colSpan={2}>{venta.fecha}</td>
+          <td>{venta.fecha}</td>
           <td>{venta.nombreCliente}</td>
           <td>{venta.documentoCliente}</td>
           <td>{venta.vendedor}</td>
@@ -359,11 +360,8 @@ const FormularioCreacionVentas = ({ setMostrarTabla, listaProductos, listaVended
       nuevaVenta[key] = value;
     });
 
-    const options = {
-      method: "POST",
-      url: "http://localhost:5000/ventas",
-      headers: { "Content-Type": "application/json" },
-      data: {
+    crearVenta(
+      {
         idVenta: nuevaVenta.idVenta,
         valorVenta: nuevaVenta.valorVenta,
         idProducto: nuevaVenta.productoId,
@@ -375,19 +373,13 @@ const FormularioCreacionVentas = ({ setMostrarTabla, listaProductos, listaVended
         vendedor: nuevaVenta.vendedor,
         estado: nuevaVenta.estado,
       },
-    };
-
-    await axios
-      .request(options)
-      .then(function (response) {
-        console.log(response.data);
-        toast.success("Venta creada con éxito");
-      })
-      .catch(function (error) {
-        console.error(error);
-        toast.error("Error creando venta");
-      });
-
+      (response) => {
+        toast.success("Venta creada con exito");
+      },
+      (error) => {
+        toast.error("Error al crear venta");
+      }
+    );
     setMostrarTabla(true);
   };
 
