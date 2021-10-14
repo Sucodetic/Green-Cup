@@ -3,9 +3,9 @@ import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 import { nanoid } from "nanoid";
 import { Dialog, Tooltip } from "@material-ui/core";
-import { obtenerProductos } from "../../utils/api";
-import { obtenerVendedores } from "../../utils/api-users";
-import { obtenerVentas } from "../../utils/api-ventas.js";
+import { obtenerProductos } from "../../utils/productos/api";
+import { obtenerVendedores } from "../../utils/usuarios/api";
+import { obtenerVenta, editarVenta, eliminarVenta } from "../../utils/ventas/api";
 import "react-toastify/dist/ReactToastify.css";
 
 const Ventas = () => {
@@ -18,7 +18,7 @@ const Ventas = () => {
 
   useEffect(() => {
     if (ejecutarConsulta) {
-      obtenerVentas(setVentas, setEjecutarConsulta);
+      obtenerVenta(setVentas, setEjecutarConsulta);
       obtenerProductos(setProductos, setEjecutarConsulta);
       obtenerVendedores(setVendedores, setEjecutarConsulta);
     }
@@ -158,46 +158,39 @@ const FilaVenta = ({ venta, listaVendedores, listaProductos, setEjecutarConsulta
   });
 
   const actualizarVenta = async () => {
-    const options = {
-      method: "PATCH",
-      url: `http://localhost:5000/ventas/${venta._id}`,
-      headers: { "Content-Type": "application/json" },
-      data: { ...infoNuevaVenta, id: venta._id },
-    };
-
-    await axios
-      .request(options)
-      .then(function (response) {
-        console.log(response.data);
-        toast.success("Venta modificada con éxito");
-        setEdit(false);
-        setEjecutarConsulta(true);
-      })
-      .catch(function (error) {
-        toast.error("Error modificando la venta");
-        console.error(error);
-      });
+    await editarVenta(
+      venta._id,
+      {
+        valorVenta: venta.valorVenta,
+        idProducto: venta.idProducto,
+        cantidad: venta.cantidad,
+        precioUnitario: venta.precioUnitario,
+        fecha: venta.fecha,
+        nombreCliente: venta.nombreCliente,
+        documentoCliente: venta.documentoCliente,
+        vendedor: venta.vendedor,
+        estado: venta.estado,
+      },
+      (response) => {
+        toast.success("Venta modificada exitosamente");
+      },
+      (error) => {
+        toast.error("Ha ocurrido un error modificando la venta");
+      }
+    );
   };
 
-  const eliminarVenta = async () => {
-    const options = {
-      method: "DELETE",
-      url: `http://localhost:5000/ventas/${venta._id}`,
-      headers: { "Content-Type": "application/json" },
-      data: { id: venta._id },
-    };
+  const eliminarVentas = async () => {
+    await eliminarVenta(
+      venta._id,
+      (responde) => {
+        toast.success("La venta se ha eliminado con exito");
+      },
+      (error) => {
+        toast.error("Ha ocurrido un error al eliminar la venta");
+      }
+    );
 
-    await axios
-      .request(options)
-      .then(function (response) {
-        console.log(response.data);
-        toast.success("Venta eliminada con éxito");
-        setEjecutarConsulta(true);
-      })
-      .catch(function (error) {
-        console.error(error);
-        toast.error("Error eliminando la venta");
-      });
     setOpenDialog(false);
   };
 
@@ -337,7 +330,7 @@ const FilaVenta = ({ venta, listaVendedores, listaProductos, setEjecutarConsulta
           <div className="p-8 flex flex-col">
             <h1 className="text-gray-900 text-2xl font-bold">¿Está seguro de querer eliminar la venta?</h1>
             <div className="flex w-full items-center justify-center my-4">
-              <button onClick={() => eliminarVenta()} className="mx-2 px-4 py-2 bg-green-500 text-white hover:bg-green-700 rounded-md shadow-md">
+              <button onClick={() => eliminarVentas()} className="mx-2 px-4 py-2 bg-green-500 text-white hover:bg-green-700 rounded-md shadow-md">
                 Sí
               </button>
               <button onClick={() => setOpenDialog(false)} className="mx-2 px-4 py-2 bg-red-500 text-white hover:bg-red-700 rounded-md shadow-md">
