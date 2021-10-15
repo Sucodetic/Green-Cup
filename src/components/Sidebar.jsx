@@ -21,9 +21,13 @@ const Sidebar = () => {
 
 const Ruta = ({ icono, ruta, nombre }) => {
   const { logout } = useAuth0();
+  const cerrarSesion = () => {
+    logout({ returnTo: window.location.origin })
+    localStorage.setItem("token",null);
+  }
   return (
     <Link to={ruta}>
-      {nombre === "Cerrar sesión" ? <button className="p-1 my-2  bg-green-600 hover:bg-green-900 flex w-full items-center text-white rounded-md" onClick={() => logout({ returnTo: window.location.origin })}>
+      {nombre === "Cerrar sesión" ? <button className="p-1 my-2  bg-green-600 hover:bg-green-900 flex w-full items-center text-white rounded-md" onClick={() => cerrarSesion()}>
         <i className={`${icono} w-10`} />
         {nombre}
       </button>
