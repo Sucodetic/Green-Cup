@@ -11,7 +11,12 @@ import { Auth0Provider } from "@auth0/auth0-react";
 
 function App() {
   return (
-    <Auth0Provider domain="greencup.us.auth0.com" clientId="QvkbbmGoKufsWPIh92vJUz3sU4eq2Py0" redirectUri={window.location.origin}>
+    <Auth0Provider
+      domain="greencup.us.auth0.com"
+      clientId="QvkbbmGoKufsWPIh92vJUz3sU4eq2Py0"
+      redirectUri={window.location.origin}
+      audience="api-autenticacion-greencup"
+    >
       <div className="App">
         <Router>
           <Switch>
