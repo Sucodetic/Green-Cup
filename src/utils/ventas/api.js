@@ -4,7 +4,7 @@ const getToken = () => {
   return `Bearer ${localStorage.getItem("token")}`;
 };
 
-export const obtenerVenta = async (setProductos, setEjecutarConsulta) => {
+export const obtenerVenta = async (successCallback, errorCallBack) => {
   const options = {
     method: "GET",
     url: "http://localhost:5000/ventas",
@@ -12,15 +12,7 @@ export const obtenerVenta = async (setProductos, setEjecutarConsulta) => {
       Authorization: getToken(),
     },
   };
-  await axios
-    .request(options)
-    .then(function (response) {
-      setProductos(response.data);
-    })
-    .catch(function (error) {
-      console.error(error);
-    });
-  setEjecutarConsulta(false);
+  await axios.request(options).then(successCallback).catch(errorCallBack);
 };
 
 export const crearVenta = async (data, successCallback, errorCallBack) => {
