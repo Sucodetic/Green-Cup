@@ -11,8 +11,20 @@ const Usuarios = () => {
   const [ejecutarConsulta, setEjecutarConsulta] = useState(true);
 
   useEffect(() => {
+    const fetchUsuarios = async () => {
+      await obtenerUsuarios(
+        (response) => {
+          setUsuarios(response.data);
+          setEjecutarConsulta(false);
+        },
+        (error) => {
+          console.log("Ocurrió un erorr", error);
+        }
+      );
+    };
+
     if (ejecutarConsulta) {
-      obtenerUsuarios(setUsuarios, setEjecutarConsulta);
+      fetchUsuarios();
     }
   }, [ejecutarConsulta]);
 
@@ -107,7 +119,6 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
         rol: infoNuevoUsuario.rol,
       },
       (response) => {
-        console.log(response);
         toast.success("Usuario modificado con exito");
         setEdit(false);
         setEjecutarConsulta(true);
