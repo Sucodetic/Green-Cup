@@ -1,8 +1,10 @@
 import React from "react";
 import Icon from "../media/google.png";
 import { Link } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const Navbar = ({ toggle }) => {
+  const { loginWithRedirect } = useAuth0();
   return (
     <nav className="flex justify-between items-center h-16 bg-white text-black btn-google relative shadow-sm font-mono" role="navigation">
       <Link to="/" className="pl-8">
@@ -14,12 +16,10 @@ const Navbar = ({ toggle }) => {
         </svg>
       </div>
       <div className="pr-8 md:block hidden">
-        <Link className="pt-4" to="/">
-          <button className="flex bg-gray-300 p-3 btn-google rounded-md m-2 hover:bg-indigo-900 hover:text-white">
+      <button className="flex bg-gray-300 p-3 btn-google rounded-md m-2 hover:bg-indigo-900 hover:text-white" onClick={() => loginWithRedirect()}>
             <img className="mr-3" src={Icon} alt="Google Icon" />
             Continuar con Google
           </button>
-        </Link>
       </div>
     </nav>
   );
