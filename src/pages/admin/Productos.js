@@ -12,8 +12,20 @@ const Productos = () => {
   const [ejecutarConsulta, setEjecutarConsulta] = useState(true);
 
   useEffect(() => {
+    const fetchProductos = async () => {
+      await obtenerProductos(
+        (response) => {
+          setProductos(response.data);
+          setEjecutarConsulta(false);
+        },
+        (error) => {
+          console.log("Ocurrió un erorr", error);
+        }
+      );
+    };
+
     if (ejecutarConsulta) {
-      obtenerProductos(setProductos, setEjecutarConsulta);
+      fetchProductos();
     }
   }, [ejecutarConsulta]);
 
