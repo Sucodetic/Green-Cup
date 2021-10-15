@@ -16,10 +16,38 @@ const Ventas = () => {
   const [ejecutarConsulta, setEjecutarConsulta] = useState(true);
 
   useEffect(() => {
+    const fecthData = async () => {
+      await obtenerProductos(
+        (response) => {
+          setProductos(response.data);
+        },
+        (error) => {
+          console.log("Ocurrió un error: ", error);
+        }
+      );
+
+      await obtenerVenta(
+        (response) => {
+          setVentas(response.data);
+        },
+        (error) => {
+          console.log("Ocurrió un error: ", error);
+        }
+      );
+
+      await obtenerVendedores(
+        (response) => {
+          setVendedores(response.data);
+        },
+        (error) => {
+          console.log("Ocurrió un error: ", error);
+        }
+      );
+
+      setEjecutarConsulta(false);
+    };
     if (ejecutarConsulta) {
-      obtenerVenta(setVentas, setEjecutarConsulta);
-      obtenerProductos(setProductos, setEjecutarConsulta);
-      obtenerVendedores(setVendedores, setEjecutarConsulta);
+      fecthData();
     }
   }, [ejecutarConsulta]);
 
