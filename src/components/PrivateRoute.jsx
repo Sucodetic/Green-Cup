@@ -16,7 +16,6 @@ const PrivateRoute = ({children}) => {
         if(isAuthenticated){
             fetchAuth0Token();
         }
-        console.log(isAuthenticated)
     },[isAuthenticated, getAccessTokenSilently])
 
     if(isLoading) return  <div className="flex flex-col items-center self-center justify-center w-full">
