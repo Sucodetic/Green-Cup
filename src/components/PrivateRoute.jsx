@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useAuth0 } from "@auth0/auth0-react";
 import ReactLoading from "react-loading";
 import ImagenLogo from "../media/logo.gif";
+import { obtenerDatosUsuarios } from '../utils/usuarios/api';
 
 const PrivateRoute = ({children}) => {
     const { isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
@@ -12,6 +13,12 @@ const PrivateRoute = ({children}) => {
                 audience: `api-autenticacion-greencup`,
             });
             localStorage.setItem("token",accessToken);
+            await obtenerDatosUsuarios((success) => {
+                console.log("Respuesta", success);
+            },
+            (error)=>{
+                console.log("Error",error);
+            })
         };
         if(isAuthenticated){
             fetchAuth0Token();
