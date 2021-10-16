@@ -6,6 +6,7 @@ import { obtenerProductos } from "../../utils/productos/api";
 import { obtenerVendedores } from "../../utils/usuarios/api";
 import { obtenerVenta, editarVenta, eliminarVenta, crearVenta } from "../../utils/ventas/api";
 import "react-toastify/dist/ReactToastify.css";
+import ReactLoading from "react-loading";
 
 const Ventas = () => {
   const [mostrarTabla, setMostrarTabla] = useState(true);
@@ -14,12 +15,15 @@ const Ventas = () => {
   const [vendedores, setVendedores] = useState([]);
   const [textoBoton, setTextoBoton] = useState("Crear Nueva Venta");
   const [ejecutarConsulta, setEjecutarConsulta] = useState(true);
+  const [loading, setLoaiding] = useState(false);
 
   useEffect(() => {
     const fecthData = async () => {
+      setLoaiding(true);
       await obtenerProductos(
         (response) => {
           setProductos(response.data);
+          setLoaiding(false);
         },
         (error) => {
           console.log("Ocurrió un error: ", error);
@@ -78,7 +82,7 @@ const Ventas = () => {
         </button>
       </div>
       {mostrarTabla ? (
-        <TablaVentas listaVentas={ventas} listaVendedores={vendedores} listaProductos={productos} setEjecutarConsulta={setEjecutarConsulta} />
+        <TablaVentas loading={loading} listaVentas={ventas} listaVendedores={vendedores} listaProductos={productos} setEjecutarConsulta={setEjecutarConsulta} />
       ) : (
         <FormularioCreacionVentas
           setMostrarTabla={setMostrarTabla}
@@ -93,7 +97,7 @@ const Ventas = () => {
   );
 };
 
-const TablaVentas = ({ listaVentas, listaVendedores, listaProductos, setEjecutarConsulta }) => {
+const TablaVentas = ({ loading, listaVentas, listaVendedores, listaProductos, setEjecutarConsulta }) => {
   const [busqueda, setBusqueda] = useState("");
   const [ventasFiltradas, setVentasFiltradas] = useState(listaVentas);
 
@@ -115,36 +119,42 @@ const TablaVentas = ({ listaVentas, listaVendedores, listaProductos, setEjecutar
       />
       <h2 className="text-2xl font-extrabold text-gray-800">Todas las ventas</h2>
       <div className="hidden md:flex w-full overflow-scroll">
-        <table className="tabla">
-          <thead>
-            <tr>
-              <th>Id venta</th>
-              <th>Valor venta</th>
-              <th>Id producto</th>
-              <th>Cantidad venta</th>
-              <th>Precio unitario</th>
-              <th>Fecha venta</th>
-              <th>Nombre cliente</th>
-              <th>Documento cliente</th>
-              <th>Vendedor</th>
-              <th>Estado venta</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {ventasFiltradas.map((venta) => {
-              return (
-                <FilaVenta
-                  key={nanoid()}
-                  venta={venta}
-                  listaVendedores={listaVendedores}
-                  listaProductos={listaProductos}
-                  setEjecutarConsulta={setEjecutarConsulta}
-                />
-              );
-            })}
-          </tbody>
-        </table>
+        {loading ? (
+          <div className="flex flex-col items-center justify-center w-full mt-5">
+            <ReactLoading type={"cubes"} color={"green"} height={100} width={200} />
+          </div>
+        ) : (
+          <table className="tabla">
+            <thead>
+              <tr>
+                <th>Id venta</th>
+                <th>Valor venta</th>
+                <th>Id producto</th>
+                <th>Cantidad venta</th>
+                <th>Precio unitario</th>
+                <th>Fecha venta</th>
+                <th>Nombre cliente</th>
+                <th>Documento cliente</th>
+                <th>Vendedor</th>
+                <th>Estado venta</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {ventasFiltradas.map((venta) => {
+                return (
+                  <FilaVenta
+                    key={nanoid()}
+                    venta={venta}
+                    listaVendedores={listaVendedores}
+                    listaProductos={listaProductos}
+                    setEjecutarConsulta={setEjecutarConsulta}
+                  />
+                );
+              })}
+            </tbody>
+          </table>
+        )}
       </div>
       <div className="flex flex-col w-full m-2 md:hidden">
         {ventasFiltradas.map((el) => {

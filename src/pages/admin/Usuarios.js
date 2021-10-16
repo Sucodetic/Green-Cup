@@ -4,18 +4,22 @@ import { nanoid } from "nanoid";
 import { Dialog, Tooltip } from "@material-ui/core";
 import { obtenerUsuarios, editarUsuario, eliminarUsuario } from "../../utils/usuarios/api";
 import "react-toastify/dist/ReactToastify.css";
+import ReactLoading from "react-loading";
 
 const Usuarios = () => {
   const [mostrarTabla] = useState(true);
   const [usuarios, setUsuarios] = useState([]);
   const [ejecutarConsulta, setEjecutarConsulta] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchUsuarios = async () => {
+      setLoading(true);
       await obtenerUsuarios(
         (response) => {
           setUsuarios(response.data);
           setEjecutarConsulta(false);
+          setLoading(false);
         },
         (error) => {
           console.log("Ocurrió un erorr", error);
@@ -40,13 +44,13 @@ const Usuarios = () => {
         <h2 className=" text-1xl text-center mb-7 md:text-left md:text-3xl font-extrabold text-gray-900">Página de administración de usuarios</h2>
       </div>
 
-      <TablaUsuarios listaUsuarios={usuarios} setEjecutarConsulta={setEjecutarConsulta} />
+      <TablaUsuarios loading={loading} listaUsuarios={usuarios} setEjecutarConsulta={setEjecutarConsulta} />
       <ToastContainer position="bottom-center" autoClose={5000} />
     </div>
   );
 };
 
-const TablaUsuarios = ({ listaUsuarios, setEjecutarConsulta }) => {
+const TablaUsuarios = ({ loading, listaUsuarios, setEjecutarConsulta }) => {
   const [busqueda, setBusqueda] = useState("");
   const [usuariosFiltrados, setUsuariosFiltrados] = useState(listaUsuarios);
 
@@ -68,22 +72,28 @@ const TablaUsuarios = ({ listaUsuarios, setEjecutarConsulta }) => {
       />
       <h2 className="text-2xl font-extrabold text-gray-800">Todos los usuarios</h2>
       <div className="hidden md:flex w-full">
-        <table className="tabla">
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Correo</th>
-              <th>Estado</th>
-              <th>Rol</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {usuariosFiltrados.map((usuario) => {
-              return <FilaUsuario key={nanoid()} usuario={usuario} setEjecutarConsulta={setEjecutarConsulta} />;
-            })}
-          </tbody>
-        </table>
+        {loading ? (
+          <div className="flex flex-col items-center justify-center w-full mt-5">
+            <ReactLoading type={"cubes"} color={"green"} height={100} width={200} />
+          </div>
+        ) : (
+          <table className="tabla">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Correo</th>
+                <th>Estado</th>
+                <th>Rol</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {usuariosFiltrados.map((usuario) => {
+                return <FilaUsuario key={nanoid()} usuario={usuario} setEjecutarConsulta={setEjecutarConsulta} />;
+              })}
+            </tbody>
+          </table>
+        )}
       </div>
       <div className="flex flex-col w-full m-2 md:hidden">
         {usuariosFiltrados.map((el) => {

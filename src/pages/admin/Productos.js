@@ -4,19 +4,23 @@ import { nanoid } from "nanoid";
 import { Dialog, Tooltip } from "@material-ui/core";
 import { crearProducto, editarProducto, obtenerProductos, eliminarProducto } from "../../utils/productos/api";
 import "react-toastify/dist/ReactToastify.css";
+import ReactLoading from "react-loading";
 
 const Productos = () => {
   const [mostrarTabla, setMostrarTabla] = useState(true);
   const [productos, setProductos] = useState([]);
   const [textoBoton, setTextoBoton] = useState("Crear Nuevo Vehículo");
   const [ejecutarConsulta, setEjecutarConsulta] = useState(true);
+  const [loading, setLoaiding] = useState(false);
 
   useEffect(() => {
     const fetchProductos = async () => {
+      setLoaiding(true);
       await obtenerProductos(
         (response) => {
           setProductos(response.data);
           setEjecutarConsulta(false);
+          setLoaiding(false);
         },
         (error) => {
           console.log("Ocurrió un erorr", error);
@@ -56,7 +60,7 @@ const Productos = () => {
         </button>
       </div>
       {mostrarTabla ? (
-        <TablaProductos listaProductos={productos} setEjecutarConsulta={setEjecutarConsulta} />
+        <TablaProductos loading={loading} listaProductos={productos} setEjecutarConsulta={setEjecutarConsulta} />
       ) : (
         <FormularioCreacionProductos setMostrarTabla={setMostrarTabla} listaProductos={productos} setProductos={setProductos} />
       )}
@@ -65,7 +69,7 @@ const Productos = () => {
   );
 };
 
-const TablaProductos = ({ listaProductos, setEjecutarConsulta }) => {
+const TablaProductos = ({ loading, listaProductos, setEjecutarConsulta }) => {
   const [busqueda, setBusqueda] = useState("");
   const [productosFiltrados, setProductosFiltrados] = useState(listaProductos);
 
@@ -87,22 +91,28 @@ const TablaProductos = ({ listaProductos, setEjecutarConsulta }) => {
       />
       <h2 className="text-2xl font-extrabold text-gray-800">Todos los productos</h2>
       <div className="hidden md:flex w-full">
-        <table className="tabla">
-          <thead>
-            <tr>
-              <th>Id producto</th>
-              <th>Descripción producto</th>
-              <th>Valor unitario</th>
-              <th>Estado</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {productosFiltrados.map((producto) => {
-              return <FilaProducto key={nanoid()} producto={producto} setEjecutarConsulta={setEjecutarConsulta} />;
-            })}
-          </tbody>
-        </table>
+        {loading ? (
+          <div className="flex flex-col items-center justify-center w-full mt-5">
+            <ReactLoading type={"cubes"} color={"green"} height={100} width={200} />
+          </div>
+        ) : (
+          <table className="tabla">
+            <thead>
+              <tr>
+                <th>Id producto</th>
+                <th>Descripción producto</th>
+                <th>Valor unitario</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {productosFiltrados.map((producto) => {
+                return <FilaProducto key={nanoid()} producto={producto} setEjecutarConsulta={setEjecutarConsulta} />;
+              })}
+            </tbody>
+          </table>
+        )}
       </div>
       <div className="flex flex-col w-full m-2 md:hidden">
         {productosFiltrados.map((el) => {
