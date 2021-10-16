@@ -29,8 +29,9 @@ const Usuarios = () => {
 
     if (ejecutarConsulta) {
       fetchUsuarios();
+      console.log(usuarios);
     }
-  }, [ejecutarConsulta]);
+  }, [ejecutarConsulta, usuarios]);
 
   useEffect(() => {
     if (mostrarTabla) {
@@ -99,8 +100,8 @@ const TablaUsuarios = ({ loading, listaUsuarios, setEjecutarConsulta }) => {
         {usuariosFiltrados.map((el) => {
           return (
             <div key={nanoid()} className="bg-gray-400 m-2 shadow-xl flex flex-col p-2 rounded-xl">
-              <span>{el.nombre}</span>
-              <span>{el.correo}</span>
+              <span>{el.name}</span>
+              <span>{el.email}</span>
               <span>{el.estado}</span>
               <span>{el.rol}</span>
             </div>
@@ -115,8 +116,8 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
   const [edit, setEdit] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [infoNuevoUsuario, setInfoNuevoUsuario] = useState({
-    nombre: usuario.nombre,
-    correo: usuario.correo,
+    nombre: usuario.name,
+    correo: usuario.email,
     estado: usuario.estado,
     rol: usuario.rol,
   });
@@ -201,8 +202,8 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
         </>
       ) : (
         <>
-          <td>{usuario.nombre}</td>
-          <td>{usuario.correo}</td>
+          <td>{usuario.name}</td>
+          <td>{usuario.email}</td>
           <td>{usuario.estado}</td>
           <td>{usuario.rol}</td>
         </>
