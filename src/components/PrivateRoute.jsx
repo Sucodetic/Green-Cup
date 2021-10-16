@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
-
 import { useAuth0 } from "@auth0/auth0-react";
+import ReactLoading from "react-loading";
+import ImagenLogo from "../media/logo.gif";
 
 const PrivateRoute = ({children}) => {
     const { isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
@@ -15,9 +16,13 @@ const PrivateRoute = ({children}) => {
         if(isAuthenticated){
             fetchAuth0Token();
         }
+        console.log(isAuthenticated)
     },[isAuthenticated, getAccessTokenSilently])
 
-    if(isLoading) return <div>Loading...</div>;
+    if(isLoading) return  <div className="flex flex-col items-center self-center justify-center w-full">
+        <img src={ImagenLogo} alt="logo"/>
+    <ReactLoading type={"spin"} color={"green"} height={100} width={200} />
+  </div>;
 
     return isAuthenticated ? <>{children}</>:<div className="text-2xl text-red-700">No puedes acceder a este sitio.</div> 
 }
