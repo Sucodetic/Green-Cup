@@ -14,7 +14,7 @@ function App() {
     <Auth0Provider
       domain="greencup.us.auth0.com"
       clientId="QvkbbmGoKufsWPIh92vJUz3sU4eq2Py0"
-      redirectUri={window.location.origin}
+      redirectUri="http://localhost:3000/admin/productos"
       audience="api-autenticacion-greencup"
     >
       <div className="App">
