@@ -3,6 +3,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import ReactLoading from "react-loading";
 import ImagenLogo from "../media/logo.gif";
 import { obtenerDatosUsuarios } from '../utils/usuarios/api';
+import Error403 from './Error403';
 
 const PrivateRoute = ({children}) => {
     const { isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
@@ -30,7 +31,8 @@ const PrivateRoute = ({children}) => {
     <ReactLoading type={"spin"} color={"green"} height={100} width={200} />
   </div>;
 
-    return isAuthenticated ? <>{children}</>:<div className="text-2xl text-red-700">No puedes acceder a este sitio.</div> 
+    return isAuthenticated ? <>{children}</>: <Error403/>
+                                        
 }
 
 export default PrivateRoute
