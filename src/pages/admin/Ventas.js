@@ -312,7 +312,7 @@ const FilaVenta = ({ venta, listaVendedores, listaProductos, setEjecutarConsulta
               onChange={(e) => setInfoNuevaVenta({ ...infoNuevaVenta, vendedor: e.target.value })}
             >
               {listaVendedores.map((vendedor) => {
-                return <option key={nanoid()}>{vendedor.nombre}</option>;
+                return <option key={nanoid()}>{vendedor.name}</option>;
               })}
             </select>
           </td>
@@ -430,15 +430,24 @@ const FormularioCreacionVentas = ({ setMostrarTabla, listaProductos, listaVended
             Identificador de la venta
             <input name="idVenta" className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2" type="number" placeholder="Id venta" required />
           </label>
-          <label className="flex flex-col" htmlFor="valorVenta">
-            Valor total de la venta
+          <label className="flex flex-col" htmlFor="fecha">
+            Fecha de venta
+            <input name="fecha" className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2" type="date" placeholder="Fecha" required />
+          </label>
+        </div>
+        <div className="flex flex-col md:flex-row">
+          <label className="flex flex-col" htmlFor="nombreCliente">
+            Nombre cliente
+            <input name="nombreCliente" className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2" type="text" placeholder="Nombre cliente" required />
+          </label>
+          <label className="flex flex-col" htmlFor="documentoCliente">
+            Documento cliente
             <input
-              name="valorVenta"
-              className="bg-gray-300 border border-gray-600 p-2 rounded-lg m-2"
-              type="number"
-              placeholder="Valor total venta"
-              value={valorTotalVenta}
-              readOnly
+              name="documentoCliente"
+              className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2"
+              type="text"
+              placeholder="Documento cliente"
+              required
             />
           </label>
         </div>
@@ -492,24 +501,15 @@ const FormularioCreacionVentas = ({ setMostrarTabla, listaProductos, listaVended
               readOnly
             />
           </label>
-          <label className="flex flex-col" htmlFor="fecha">
-            Fecha de venta
-            <input name="fecha" className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2" type="date" placeholder="Fecha" required />
-          </label>
-        </div>
-        <div className="flex flex-col md:flex-row">
-          <label className="flex flex-col" htmlFor="nombreCliente">
-            Nombre cliente
-            <input name="nombreCliente" className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2" type="text" placeholder="Nombre cliente" required />
-          </label>
-          <label className="flex flex-col" htmlFor="documentoCliente">
-            Documento cliente
+          <label className="flex flex-col" htmlFor="valorVenta">
+            Valor total de la venta
             <input
-              name="documentoCliente"
-              className="bg-gray-50 border border-gray-600 p-2 rounded-lg m-2"
-              type="text"
-              placeholder="Documento cliente"
-              required
+              name="valorVenta"
+              className="bg-gray-300 border border-gray-600 p-2 rounded-lg m-2"
+              type="number"
+              placeholder="Valor total venta"
+              value={valorTotalVenta}
+              readOnly
             />
           </label>
         </div>
@@ -521,7 +521,7 @@ const FormularioCreacionVentas = ({ setMostrarTabla, listaProductos, listaVended
                 Seleccione una opción
               </option>
               {listaVendedores.map((vendedor) => {
-                return <option key={nanoid()}>{vendedor.nombre}</option>;
+                return <option key={nanoid()}>{vendedor.name}</option>;
               })}
             </select>
           </label>
